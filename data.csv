@@ -1,5 +1,115 @@
-title,body,tags,closed
-"How to center div","I tried CSS but not working","css html",0
-"Homework question help","solve this math problem","homework",1
-"Null pointer exception","I get error in java code","java error",0
-"Do my assignment","please write full code","homework",1
+import pandas as pd
+import random
+
+
+titles_good = [
+    "How to fix null pointer exception in Java?",
+    "Why is my Python list empty after append?",
+    "How to center div using CSS flexbox?",
+    "React useState not updating state",
+    "Segmentation fault in C program",
+    "How to connect to MySQL using Python?",
+    "Index out of range error in Python",
+    "How to deploy Flask app?",
+    "Difference between list and tuple in Python?",
+    "How to use async await in JavaScript?"
+]
+
+bodies_good = [
+    "I am getting an error when running my code. Here is the code and error message.",
+    "I tried multiple solutions but still getting error.",
+    "Here is my code and expected output vs actual output.",
+    "I read documentation but didn't understand this error.",
+    "Error: NullPointerException at line 45."
+]
+
+
+titles_debug = [
+    "Why does my code crash?",
+    "Getting segmentation fault in C",
+    "Python TypeError unsupported operand",
+    "Java ArrayIndexOutOfBoundsException",
+    "Flask app not running",
+    "SQL query not returning results",
+    "Why is my loop infinite?",
+    "Memory leak in C++ program",
+    "JavaScript promise not resolving",
+    "Thread deadlock issue in Java"
+]
+
+bodies_debug = [
+    "Here is my code and error message. Please help me fix this bug.",
+    "Program crashes when I run this code.",
+    "I am getting runtime error in this function.",
+    "This code was working earlier but now shows error.",
+    "Debugger shows exception at this line."
+]
+
+
+titles_homework = [
+    "Help me with homework",
+    "Urgent assignment help",
+    "Do my assignment",
+    "Write program for me",
+    "Solve this question",
+    "I need full code",
+    "Please solve this ASAP",
+    "Homework problem",
+    "Anyone help with assignment?",
+    "Need solution जल्दी"
+]
+
+bodies_homework = [
+    "Please solve this homework for me.",
+    "I need full code urgently.",
+    "My assignment is due tomorrow.",
+    "Write full program for this question.",
+    "Anyone solve this question."
+]
+
+
+titles_broad = [
+    "Best programming language?",
+    "How to become good programmer?",
+    "Which is better Java or Python?",
+    "Best way to learn coding?",
+    "How to make big software?",
+    "Explain machine learning",
+    "What is programming?",
+    "How to become hacker?",
+    "Teach me Python",
+    "Career advice in programming"
+]
+
+bodies_broad = [
+    "I am new to programming. Please guide me.",
+    "Which language should I learn?",
+    "Explain everything about this topic.",
+    "I want complete roadmap.",
+    "Please give full tutorial."
+]
+
+
+data = []
+
+# 300 Good
+for _ in range(300):
+    data.append([random.choice(titles_good), random.choice(bodies_good), "programming", 0])
+
+# 300 Debug
+for _ in range(300):
+    data.append([random.choice(titles_debug), random.choice(bodies_debug), "debugging", 0])
+
+# 300 Homework (Closed)
+for _ in range(300):
+    data.append([random.choice(titles_homework), random.choice(bodies_homework), "homework", 1])
+
+# 300 Too Broad (Closed)
+for _ in range(300):
+    data.append([random.choice(titles_broad), random.choice(bodies_broad), "opinion", 1])
+
+# Save CSV
+df = pd.DataFrame(data, columns=["title", "body", "tags", "closed"])
+df.to_csv("data.csv", index=False)
+
+print(df['closed'].value_counts())
