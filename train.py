@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 import re
+import json
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -29,7 +30,9 @@ X = vectorizer.fit_transform(df['clean_text'])
 y = df['closed']
 
 # Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 # Models
 models = {
@@ -40,27 +43,38 @@ models = {
 }
 
 results = {}
+best_accuracy = 0
+best_model = None
+best_model_name = ""
 
 for name, model in models.items():
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
+    acc = accuracy_score(y_test, y_pred)
+    pre = precision_score(y_test, y_pred)
+    rec = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+
     results[name] = {
-        "Accuracy": accuracy_score(y_test, y_pred),
-        "Precision": precision_score(y_test, y_pred),
-        "Recall": recall_score(y_test, y_pred),
-        "F1 Score": f1_score(y_test, y_pred)
+        "accuracy": acc,
+        "precision": pre,
+        "recall": rec,
+        "f1": f1
     }
 
-    # Save best model
-    if name == "Random Forest":
-        pickle.dump(model, open("model.pkl", "wb"))
+    if acc > best_accuracy:
+        best_accuracy = acc
+        best_model = model
+        best_model_name = name
 
-# Save vectorizer
+# Save best model
+pickle.dump(best_model, open("model.pkl", "wb"))
 pickle.dump(vectorizer, open("vectorizer.pkl", "wb"))
 
-print("\nMODEL RESULTS:")
-for model, metrics in results.items():
-    print(f"\n{model}")
-    for metric, value in metrics.items():
-        print(f"{metric}: {value:.2f}")
+# Save metrics
+with open("metrics.json", "w") as f:
+    json.dump(results, f)
+
+print("Best Model:", best_model_name)
+print("Metrics saved to metrics.json")
